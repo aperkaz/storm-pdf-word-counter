@@ -18,7 +18,7 @@ import backtype.storm.utils.Utils;
 
 import storm.spout.RandomSentenceSpout;
 
-class TopNTweetTopology
+class PdfWordCountTopology
 {
   public static void main(String[] args) throws Exception
   {
