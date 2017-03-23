@@ -26,5 +26,5 @@ This following repo contains the Storm topology code and the instructions to run
 6.3. `mvn package` - may take a while the first time.<br/>
 7. Execute the packaged topology <br/>
 7.1. Inside the VM: `cd /vagrant/topology` <br/>
-7.2. `storm jar target/storm-twitter-top-hashtags-0.0.1-SNAPSHOT-jar-with-dependencies.jar storm.PdfWordCountTopology`
+7.2. `storm jar target/storm-pdf-word-counter-0.0.1-SNAPSHOT-jar-with-dependencies.jar storm.PdfWordCountTopology`
 8. Live generated results at `http://127.0.0.1:5000`.
