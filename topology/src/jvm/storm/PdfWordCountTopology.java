@@ -18,6 +18,8 @@ import backtype.storm.utils.Utils;
 
 import storm.spout.TestSpout;
 
+import storm.ParseWordBolt;
+
 class PdfWordCountTopology
 {
   public static void main(String[] args) throws Exception
@@ -27,6 +29,9 @@ class PdfWordCountTopology
 
     // attach the Random sentence Spout to the topology - parallelism of 1
     builder.setSpout("test-spout", new TestSpout(), 1);
+
+    // remove the unwanted words from each sentence and extract the words - parallelism of 5
+    builder.setBolt("parse-words", new ParseWordBolt(), 5). shuffleGrouping("test-spout");
 
     /*
     // attach the parse tweet bolt using shuffle grouping
