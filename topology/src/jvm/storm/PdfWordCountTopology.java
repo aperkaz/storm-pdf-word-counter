@@ -19,6 +19,7 @@ import backtype.storm.utils.Utils;
 import storm.spout.TestSpout;
 
 import storm.ParseWordBolt;
+import storm.BookWordCountBolt;
 
 class PdfWordCountTopology
 {
@@ -30,8 +31,18 @@ class PdfWordCountTopology
     // attach the Random sentence Spout to the topology - parallelism of 1
     builder.setSpout("test-spout", new TestSpout(), 1);
 
-    // remove the unwanted words from each sentence and extract the words - parallelism of 5
-    builder.setBolt("parse-words", new ParseWordBolt(), 5). shuffleGrouping("test-spout");
+    // remove the unwanted words from each sentence and extract the words - parallelism of 10
+    builder.setBolt("word-parse-bolt", new ParseWordBolt(), 10). shuffleGrouping("test-spout");
+
+    // count the word appearances by book - parallelism of 10
+    builder.setBolt("book-word-count-bolt", new BookWordCountBolt(), 10).fieldsGrouping("word-parse-bolt", new Fields("book-title"));
+
+    // order the top 10 words per book - parallelism of 5
+
+    // aggregate all the top 10 words per book - parallelism of 1
+
+    // report the result to REDIS with a ReportBolt
+
 
     /*
     // attach the parse tweet bolt using shuffle grouping
