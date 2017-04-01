@@ -16,44 +16,22 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 
-import storm.spout.RandomSentenceSpout;
+import storm.spout.TestSpout;
 
 class PdfWordCountTopology
 {
   public static void main(String[] args) throws Exception
   {
-    //Variable TOP_N number of words
-    int TOP_N = 10;
     // create the topology
     TopologyBuilder builder = new TopologyBuilder();
 
+    // attach the Random sentence Spout to the topology - parallelism of 1
+    builder.setSpout("test-spout", new TestSpout(), 1);
+
     /*
-     * In order to create the spout, you need to get twitter credentials
-     * If you need to use Twitter firehose/Tweet stream for your idea,
-     * create a set of credentials by following the instructions at
-     *
-     * https://dev.twitter.com/discussions/631
-     *
-     */
-
-    // now create the tweet spout with the credentials
-    TweetSpout tweetSpout = new TweetSpout(
-        "f8KhV4pk6q3rLV20qKZNvWM8o",
-        "Duc03vmZGw18pEimySFbBpduROhIVo1dar2977Z2Ezv3o2ksB5",
-        "835892143176704002-AloXSqeV5EuCQZlBQVzoCKvZU7yiIR7",
-        "azewVfhaw3UplsahZSMoLCTzdTFa49UYRBRoPEKN4aXDK"
-
-    );
-
-    // attach the tweet spout to the topology - parallelism of 1
-    builder.setSpout("tweet-spout", tweetSpout, 1);
-
-    // attach the Random Sentence Spout to the topology - parallelism of 1
-    //builder.setSpout("random-sentence-spout", new RandomSentenceSpout(), 1);
-
     // attach the parse tweet bolt using shuffle grouping
     builder.setBolt("parse-tweet-bolt", new ParseTweetBolt(), 10).shuffleGrouping("tweet-spout");
-    //builder.setBolt("parse-tweet-bolt", new ParseTweetBolt(), 10).shuffleGrouping("random-sentence-spout");
+
 
     // attach the count bolt using fields grouping - parallelism of 15
     builder.setBolt("count-bolt", new CountBolt(), 15).fieldsGrouping("parse-tweet-bolt", new Fields("tweet-word"));
@@ -70,6 +48,7 @@ class PdfWordCountTopology
 
     // attach the report bolt using global grouping - parallelism of 1
     builder.setBolt("report-bolt", new ReportBolt(), 1).globalGrouping("total-ranker");
+    */
 
     // create the default config object
     Config conf = new Config();

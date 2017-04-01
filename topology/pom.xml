@@ -3,12 +3,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>apache.storm</groupId>
-  <artifactId>storm-twitter-top-hashtags</artifactId>
+  <artifactId>storm-pdf-word-counter</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>storm-twitter-top-hashtags</name>
-  <url>https://github.com/aperkaz/storm-twitter-top-hashtags</url>
+  <name>storm-pdf-word-counter</name>
+  <url>https://github.com/aperkaz/storm-pdf-word-counter#storm-pdf-word-counter</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -72,17 +72,7 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>15.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.twitter4j</groupId>
-      <artifactId>twitter4j-core</artifactId>
-      <version>[3.0,)</version>
-    </dependency>
-    <dependency>
-      <groupId>org.twitter4j</groupId>
-      <artifactId>twitter4j-stream</artifactId>
-      <version>[3.0,)</version>
-    </dependency>
+    </dependency>    
     <dependency>
       <groupId>com.lambdaworks</groupId>
       <artifactId>lettuce</artifactId>

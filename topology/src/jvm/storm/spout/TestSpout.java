@@ -11,7 +11,7 @@ import backtype.storm.utils.Utils;
 import java.util.Map;
 import java.util.Random;
 
-public class RandomSentenceSpout extends BaseRichSpout {
+public class TestSpout extends BaseRichSpout {
   SpoutOutputCollector _collector;
   Random _rand;
 
@@ -25,20 +25,35 @@ public class RandomSentenceSpout extends BaseRichSpout {
   @Override
   public void nextTuple() {
     Utils.sleep(100);
-    String[] sentences = new String[]{
-      "the cow jumped over the moon",
-      "an apple a day keeps the doctor away",
-      "four score and seven years ago",
-      "snow white and the seven dwarfs",
-      "i am at two with nature"
-      };
-    String sentence = sentences[_rand.nextInt(sentences.length)];
-    _collector.emit(new Values(sentence));
+    String[] sentence1 = new String[]{
+      "Book1","test sentence1"
+    };
+
+    String[] sentence2 = new String[]{
+      "Book2","test sentence2"
+    };
+
+    String[] sentence3 = new String[]{
+      "Book3","test sentence3"
+    };
+
+    String[][] bookSentences = new String[][]{
+      sentence1,
+      sentence2,
+      sentence3
+    };
+
+    int index = _rand.nextInt(bookSentences.length);
+
+    String bookName = bookSentences[index][0];
+    String sentenceContent = bookSentences[index][1];
+
+    _collector.emit(new Values(bookName,sentenceContent));
   }
 
   @Override
   public void declareOutputFields(OutputFieldsDeclarer declarer) {
-    declarer.declare(new Fields("sentence"));
+    declarer.declare(new Fields("book", "sentence"));
   }
 
 }
