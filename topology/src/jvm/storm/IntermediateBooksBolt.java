@@ -31,25 +31,30 @@ import storm.tools.RankableObjectWithFields;
  * It assumes the input tuples to adhere to the following format: (object, object_count, additionalField1,
  * additionalField2, ..., additionalFieldN).
  */
-public final class IntermediateRankingsBolt extends AbstractRankerBolt {
+public final class IntermediateBooksBolt extends AbstractRankerBolt {
 
   private static final long serialVersionUID = -1369800530256637409L;
-  private static final Logger LOG = Logger.getLogger(IntermediateRankingsBolt.class);
+  private static final Logger LOG = Logger.getLogger(IntermediateBooksBolt.class);
 
-  public IntermediateRankingsBolt() {
+  public IntermediateBooksBolt() {
     super();
   }
 
-  public IntermediateRankingsBolt(int topN) {
+  public IntermediateBooksBolt(int topN) {
     super(topN);
   }
 
-  public IntermediateRankingsBolt(int topN, int emitFrequencyInSeconds) {
+  public IntermediateBooksBolt(int topN, int emitFrequencyInSeconds) {
     super(topN, emitFrequencyInSeconds);
   }
 
   @Override
   void updateRankingsWithTuple(Tuple tuple) {
+    // incoming tuple format ["word", count, "book-title"]
+    String word = tuple.getString(0);
+    Long count = tuple.getLong(1);
+    String bookTitle = tuple.getString(2);
+
     Rankable rankable = RankableObjectWithFields.from(tuple);
     super.getRankings().updateWith(rankable);
   }

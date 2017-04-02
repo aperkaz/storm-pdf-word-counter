@@ -84,7 +84,7 @@ public class BookWordCountBolt extends BaseRichBolt
     }
 
     // emit the book, word and count
-    collector.emit(new Values(bookTile, word, count));
+    collector.emit(new Values(word, count, bookTile));
   }
 
   @Override

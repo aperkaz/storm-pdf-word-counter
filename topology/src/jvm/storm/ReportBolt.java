@@ -50,13 +50,14 @@ public class ReportBolt extends BaseRichBolt
   @Override
   public void execute(Tuple tuple)
   {
-    Rankings rankableList = (Rankings) tuple.getValue(0);
 
-    for (Rankable r: rankableList.getRankings()){
-      String word = r.getObject().toString();
-      Long count = r.getCount();
-      redis.publish("WordCountTopology", word + "|" + Long.toString(count));
-    }
+    String word = tuple.getString(0);
+    Long count = tuple.getLong(1);
+    String bookTitle = tuple.getString(2);
+
+    redis.publish("BookWordCount", bookTitle + "|" + word + "|" + Long.toString(count));
+
+    System.out.println("\n PUBLISH TO REDIS: "+ bookTitle + " | " + word + " | " + count + "\n");    
 
     // access the first column 'word'
     //String word = tuple.getStringByField("word");

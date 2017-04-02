@@ -24,7 +24,7 @@ public class TestSpout extends BaseRichSpout {
 
   @Override
   public void nextTuple() {
-    Utils.sleep(1000);
+    Utils.sleep(100);
     String[] sentence1 = new String[]{
       "Book1","test the sentence1"
     };

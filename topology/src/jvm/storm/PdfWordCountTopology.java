@@ -39,7 +39,7 @@ class PdfWordCountTopology
 
     // order the top 10 words per book - parallelism of 5
     /* TODO */
-    //builder.setBolt("intermediate-book-ranker", new IntermediateBooksBolt(), 4).fieldsGrouping("book-word-count-bolt", new Fields("book-title"));
+    //builder.setBolt("intermediate-book-ranker", new IntermediateBooksBolt(), 15).fieldsGrouping("book-word-count-bolt", new Fields("book-title"));
 
     // aggregate all the top 10 words per book - parallelism of 1
     /* TODO */
@@ -47,7 +47,7 @@ class PdfWordCountTopology
 
     // report the result to REDIS with a ReportBolt
     /* TODO */
-    //builder.setBolt("report-bolt", new ReportBolt(), 1).globalGrouping("total-ranker");
+    builder.setBolt("report-bolt", new ReportBolt(), 1).globalGrouping("book-word-count-bolt");
 
     /*
     builder.setBolt("intermediate-ranker", new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping("count-bolt", new Fields("word"));
