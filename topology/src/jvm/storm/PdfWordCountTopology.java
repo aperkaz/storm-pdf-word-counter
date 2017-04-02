@@ -38,31 +38,20 @@ class PdfWordCountTopology
     builder.setBolt("book-word-count-bolt", new BookWordCountBolt(), 10).fieldsGrouping("word-parse-bolt", new Fields("book-title"));
 
     // order the top 10 words per book - parallelism of 5
+    /* TODO */
+    //builder.setBolt("intermediate-book-ranker", new IntermediateBooksBolt(), 4).fieldsGrouping("book-word-count-bolt", new Fields("book-title"));
 
     // aggregate all the top 10 words per book - parallelism of 1
+    /* TODO */
+    // builder.setBolt("total-ranker", new TotalRankingsBolt(TOP_N)).globalGrouping("intermediate-book-ranker");
 
     // report the result to REDIS with a ReportBolt
-
+    /* TODO */
+    //builder.setBolt("report-bolt", new ReportBolt(), 1).globalGrouping("total-ranker");
 
     /*
-    // attach the parse tweet bolt using shuffle grouping
-    builder.setBolt("parse-tweet-bolt", new ParseTweetBolt(), 10).shuffleGrouping("tweet-spout");
-
-
-    // attach the count bolt using fields grouping - parallelism of 15
-    builder.setBolt("count-bolt", new CountBolt(), 15).fieldsGrouping("parse-tweet-bolt", new Fields("tweet-word"));
-
-    // attach rolling count bolt using fields grouping - parallelism of 5
-    // TEST
-    //builder.setBolt("rolling-count-bolt", new RollingCountBolt(30, 10), 1).fieldsGrouping("parse-tweet-bolt", new Fields("tweet-word"));
-
-    //from incubator-storm/.../storm/starter/RollingTopWords.java
-    //builder.setBolt("intermediate-ranker", new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping("rolling-count-bolt", new Fields("obj"));
-
     builder.setBolt("intermediate-ranker", new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping("count-bolt", new Fields("word"));
     builder.setBolt("total-ranker", new TotalRankingsBolt(TOP_N)).globalGrouping("intermediate-ranker");
-
-    // attach the report bolt using global grouping - parallelism of 1
     builder.setBolt("report-bolt", new ReportBolt(), 1).globalGrouping("total-ranker");
     */
 

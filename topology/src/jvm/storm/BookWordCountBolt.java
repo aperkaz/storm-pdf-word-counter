@@ -78,8 +78,7 @@ public class BookWordCountBolt extends BaseRichBolt
 
         // book and word present
         count = bookWords.get(bookTile).get(word);
-        count++;
-        bookWords.get(bookTile).put(word, count);
+        bookWords.get(bookTile).put(word, ++count);
       }
 
     }
