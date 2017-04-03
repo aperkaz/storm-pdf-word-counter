@@ -84,14 +84,14 @@ public class BookWordCountBolt extends BaseRichBolt
     }
 
     // emit the book, word and count
-    collector.emit(new Values(word, count, bookTile));
+    collector.emit(new Values(bookTile, word, count));
   }
 
   @Override
   public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer)
   {
     // tell storm the schema of the output tuple for this spout
-    // tuple consists of a three columns called 'book', 'word' and 'count'
+    // tuple consists of a three columns called 'book-title', 'word' and 'count'
     outputFieldsDeclarer.declare(new Fields("book-title", "word", "count"));
   }
 }

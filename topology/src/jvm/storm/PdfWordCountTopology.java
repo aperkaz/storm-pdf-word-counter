@@ -20,6 +20,7 @@ import storm.spout.TestSpout;
 
 import storm.ParseWordBolt;
 import storm.BookWordCountBolt;
+import storm.BookWordRankerBolt;
 
 class PdfWordCountTopology
 {
@@ -39,7 +40,7 @@ class PdfWordCountTopology
 
     // order the top 10 words per book - parallelism of 5
     /* TODO */
-    //builder.setBolt("intermediate-book-ranker", new IntermediateBooksBolt(), 15).fieldsGrouping("book-word-count-bolt", new Fields("book-title"));
+    builder.setBolt("book-word-ranker", new BookWordRankerBolt()).globalGrouping("book-word-count-bolt");
 
     // aggregate all the top 10 words per book - parallelism of 1
     /* TODO */
