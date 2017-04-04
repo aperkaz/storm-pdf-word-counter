@@ -48,7 +48,7 @@ class PdfWordCountTopology
 
     // report the result to REDIS with a ReportBolt
     /* TODO */
-    builder.setBolt("report-bolt", new ReportBolt(), 1).globalGrouping("book-word-count-bolt");
+    builder.setBolt("report-bolt", new ReportBolt(), 1).globalGrouping("book-word-ranker");
 
     /*
     builder.setBolt("intermediate-ranker", new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping("count-bolt", new Fields("word"));

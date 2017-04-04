@@ -58,7 +58,7 @@ public class ReportBolt extends BaseRichBolt
 
     redis.publish("BookWordCount", bookTitle + "|" + word + "|" + Long.toString(count));
 
-    System.out.println("\n PUBLISH TO REDIS: "+ bookTitle + " | " + word + " | " + count + "\n");
+    System.out.println("\n PUBLISHED TO REDIS: "+ bookTitle + " | " + word + " | " + count + "\n");
   }
 
   public void declareOutputFields(OutputFieldsDeclarer declarer)

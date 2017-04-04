@@ -26,23 +26,23 @@ public class TestSpout extends BaseRichSpout {
   public void nextTuple() {
     Utils.sleep(100);
     String[] sentence1 = new String[]{
-      "Book1","test the sentence1"
+      "Book1","test1 the sentence1"
     };
 
     String[] sentence2 = new String[]{
-      "Book2","test the sentence2"
+      "Book2","test2 the sentence2"
     };
 
     String[] sentence3 = new String[]{
-      "Book3","test the sentence3"
+      "Book3","test3 the sentence3"
     };
 
     String[] sentence4 = new String[]{
-      "Book4","test the sentence4"
+      "Book4","test4 the sentence4"
     };
 
     String[] sentence5 = new String[]{
-      "Book5","test the sentence5"
+      "Book5","test5 the sentence5"
     };
 
     String[][] bookSentences = new String[][]{

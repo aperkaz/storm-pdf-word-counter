@@ -52,7 +52,7 @@ public class BookWordCountBolt extends BaseRichBolt
   public void execute(Tuple tuple)
   {
     // get the book title from the 1st column of incoming tuple
-    String bookTile = tuple.getString(0);
+    String bookTitle = tuple.getString(0);
 
     // get the word from the 2nd column of incoming tuple
     String word = tuple.getString(1);
@@ -61,30 +61,35 @@ public class BookWordCountBolt extends BaseRichBolt
     Long count = 1L;
 
     // check if the book is present in the map
-    if(bookWords.get(bookTile) == null){
+    if(bookWords.get(bookTitle) == null){
 
       // book not present, add it
-      bookWords.put(bookTile, new HashMap<String, Long>());
+      bookWords.put(bookTitle, new HashMap<String, Long>());
+      // add the first word of the book
+      bookWords.get(bookTitle).put(word, count);
 
     } else {
 
       // present, check if the word is there
-      if(bookWords.get(bookTile).get(word) == null){
+      if(bookWords.get(bookTitle).get(word) == null){
 
         // book present, but not word
-        bookWords.get(bookTile).put(word, count);
+        bookWords.get(bookTitle).put(word, count);
 
       } else {
-
-        // book and word present
-        count = bookWords.get(bookTile).get(word);
-        bookWords.get(bookTile).put(word, ++count);
+        // check word present
+        if(!bookWords.get(bookTitle).containsKey(word)){
+          bookWords.get(bookTitle).put(word, count);
+        } else {
+          count = bookWords.get(bookTitle).get(word);
+          bookWords.get(bookTitle).put(word, ++count);
+        }
       }
 
     }
 
     // emit the book, word and count
-    collector.emit(new Values(bookTile, word, count));
+    collector.emit(new Values(bookTitle, word, count));
   }
 
   @Override

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Iterator;
 
 import storm.Word;
 
@@ -32,7 +33,7 @@ public class BookWordRankerBolt extends BaseRichBolt
   private OutputCollector collector;
 
   // number of top N words
-  private int TOP_N_WORDS = 5;
+  private int TOP_N_WORDS = 1;
 
   // report count
   private int reportCount = 0;
@@ -101,12 +102,21 @@ public class BookWordRankerBolt extends BaseRichBolt
     if(bookWordMap.get(bookTitle).size() > TOP_N_WORDS)
       bookWordMap.get(bookTitle).subList(TOP_N_WORDS, bookWordMap.get(bookTitle).size()).clear();
 
-    if(++reportCount >= 10){
-      collector.emit(new Values(bookTitle, word, count));
+    if(++reportCount >= 3){
+      // emit the topN words for all books
+
+      Iterator it = bookWordMap.entrySet().iterator();
+      while (it.hasNext()) {
+           Map.Entry pair = (Map.Entry)it.next();
+           bookTitle = (String) pair.getKey();
+           LinkedList<Word> wordList = (LinkedList<Word>) pair.getValue();
+           for(Word iteratedWord : wordList){
+             collector.emit(new Values(bookTitle, iteratedWord.getContent(), iteratedWord.getCount()));
+           }
+       }
       reportCount = 0;
     }
 
-    //  collector.emit(new Values(bookTitle, word, count));
   }
 
   @Override
