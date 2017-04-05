@@ -63,6 +63,12 @@ public class PdfSpoolingSpout extends BaseRichSpout {
          line = bookContent.remove(0);
          // emit [bookTitle, line]
           _collector.emit(new Values(bookTitle , line));
+      } else {
+        try {
+          Thread.sleep(1000);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
       }
        break;
     }
