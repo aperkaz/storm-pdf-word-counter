@@ -49,6 +49,12 @@ public class PdfSpoolingSpout extends BaseRichSpout {
 
   @Override
   public void nextTuple() {
+    try{
+      Thread.sleep(100);
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+
 
     String bookTitle = "", line = "";
 

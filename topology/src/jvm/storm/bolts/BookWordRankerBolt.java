@@ -102,7 +102,7 @@ public class BookWordRankerBolt extends BaseRichBolt
     if(bookWordMap.get(bookTitle).size() > TOP_N_WORDS)
       bookWordMap.get(bookTitle).subList(TOP_N_WORDS, bookWordMap.get(bookTitle).size()).clear();
 
-    if(++reportCount >= 3){
+    if(++reportCount >= 500){
       // emit the topN words for all books
 
       Iterator it = bookWordMap.entrySet().iterator();

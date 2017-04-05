@@ -1,43 +1,168 @@
 var source = new EventSource('/stream');
-var hash = {};
-var width = 1200;
-var height = 700;
+
+var maxWords = 10;
+
+var pdfData = [];
+
+// example object
+var dummyDataStruct = [
+  {
+  "title" : "bookTitle",
+  "words" : [
+    "word1",  "word2"
+  ],
+  "counts" : [
+    10, 5
+  ],
+  "minCount" : 0
+  }
+];
+
+function getBookTitle(event){
+  return event.data.split("|")[0];
+}
+
+function getWord(event){
+  return event.data.split("|")[1];
+}
+
+function getCount(event){
+  return event.data.split("|")[2];
+}
+
+function isBookStored(bookTitle){
+  for(var index = 0; index < pdfData.length ; index++){
+    if(pdfData[index]['title'] === bookTitle){
+      return true;
+    }
+  }
+  return false;
+}
+
+function initializeBook(bookTitle){
+  var bookObject = {};
+  bookObject['title'] = bookTitle;
+  bookObject['words'] = [];
+  bookObject['counts'] = [];
+  bookObject['minCount'] = 0;
+  return bookObject;
+}
+
+
+function retrieveBookIndex(bookTitle){
+  for(var index = 0; index < pdfData.length ; index++){
+    if(pdfData[index]['title'] === bookTitle){
+      return index;
+    }
+  }
+  return -1;
+}
 
 source.onmessage = function (event) {
-  word = event.data.split("|")[0];
-  count = event.data.split("|")[1];
-  if(!skip(word)){
-    hash[word]=count;
+  bookTitle = getBookTitle(event);
+  word = getWord(event);
+  count = getCount(event);
+
+  var bookIndex = retrieveBookIndex(bookTitle);
+
+  // clear empty messages from REDIS
+  if(typeof word === undefined  || count < 0){
+    return;
   }
+
+  // initialize new books
+  if(bookIndex === -1){
+    pdfData.push(initializeBook(bookTitle));
+    bookIndex = retrieveBookIndex(bookTitle);
+  }
+
+  // add word to book (if worth min count)
+  if( pdfData[bookIndex]['minCount'] < count){
+    // is the word already contained
+    if(!pdfData[bookIndex]['words'].includes(word)){
+      // word not contained
+
+      // iterate words and locate
+      if(pdfData[bookIndex]['counts'].length === 0){
+        pdfData[bookIndex]['words'].splice(0, 0, word);
+        pdfData[bookIndex]['counts'].splice(0, 0, count);
+      } else {
+        for( var index = 0; index < pdfData[bookIndex]['counts'].length ; index++){
+          if( pdfData[bookIndex]['counts'][index] < count){
+            pdfData[bookIndex]['words'].splice(index, 0, word);
+            pdfData[bookIndex]['counts'].splice(index, 0, count);
+          }
+        }
+      }
+
+      // remove extra words
+      pdfData[bookIndex]['words'] = pdfData[bookIndex]['words'].slice(0, maxWords);
+      pdfData[bookIndex]['counts'] = pdfData[bookIndex]['counts'].slice(0, maxWords);
+
+    } else {
+      // word contained
+
+      // update current count
+      var wordIndex = pdfData[bookIndex]['words'].indexOf(word);
+      pdfData[bookIndex]['counts'][wordIndex] = count;
+    }
+
+    // update min count
+      pdfData[bookIndex]['minCount'] = count;
+  }
+
+
 };
 
-var updateViz = function () {
-    var text = svgContainer.selectAll("text")
-    .data(d3.entries(hash), function(d){ return d.key; })
+var updateBookInformation = function () {
+  // update tables with information
+  var html = '';
+
+  for (var index = 0 ; index < pdfData.length ; index++) {
+      // create the new table per book
+      var table = createTableForBook(pdfData[index]);
+      html += table;
+  }
 
 
-    text.enter()
-    .append("text")
-    .attr("font-family", "sans-serif")
+  document.getElementById("data").innerHTML = html;
 
-    text.text(function(d,i){ return d.key; })
-      .transition(1000)
-      .delay(500*Math.random())
-      .attr("x",function(d,i){ return (.5*d.value)+i*5; })
-      .attr("y",function(d,i){ return (1.5*d.value)+i*15; })
-      .attr("font-size", function(d,i){ return d.value+"px"; })
-      .attr("fill", function(d, i) { return colors(d.value + i*10); })
-      //comment following lines and uncomment previous for colors function
-      //.attr("fill",function(d,i){return "rgb("+
-      //Math.round(255/(1+Math.exp(-.001*d.value)))+","+
-      //Math.round(255-255/(1+Math.exp(-.01*d.value)))+","+
-      //Math.round(130-255/(1+Math.exp(-.01*d.value)))+")";});
-
-    console.log("Array-2" + JSON.stringify(d3.entries(hash)));
 };
+
+function createTableForBook(bookData){
+  var table =
+   '<table class="table" style="text-align: center;"> '+
+  '   <thead> '+
+  '     <tr> '+
+  '       <th class="text-center">' + bookData['title'] + '</th> '+
+  '     </tr>'+
+  '   </thead>'+
+  '   <tbody>';
+
+  table += bookData['words'].forEach(function (index){
+      return  '     <tr>  '+
+              '      <td>' + bookData['words'][index] + '</td>   '+
+              '      <td>' + bookData['counts'][index] + '</td>  '+
+              '     </tr>'
+  });
+
+  table +=  '   </tbody> '+
+            '</table>';
+}
+
+function populateLegend(){
+  var html = '<p><b>';
+  categories.map(function(category){
+    html += '<font color='+colors[categories.indexOf(category)]+'>'+category+
+    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>';
+  });
+  html += '</b></p>';
+  document.getElementById("legend").innerHTML = html;
+}
+
 
 //update display every #1000 milliseconds
-window.setInterval(updateViz, 1000);
+window.setInterval(updateBookInformation, 1000);
 
 //clean list, can be added to word skipping bolt
 var skipList = ["https","follow","1","2","please","following","followers","fucking","RT","the","at","a"];
