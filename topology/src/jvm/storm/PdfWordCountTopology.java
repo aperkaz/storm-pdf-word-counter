@@ -39,22 +39,10 @@ class PdfWordCountTopology
     builder.setBolt("book-word-count-bolt", new BookWordCountBolt(), 10).fieldsGrouping("word-parse-bolt", new Fields("book-title"));
 
     // order the top 10 words per book - parallelism of 5
-    /* TODO */
     builder.setBolt("book-word-ranker", new BookWordRankerBolt()).globalGrouping("book-word-count-bolt");
 
-    // aggregate all the top 10 words per book - parallelism of 1
-    /* TODO */
-    // builder.setBolt("total-ranker", new TotalRankingsBolt(TOP_N)).globalGrouping("intermediate-book-ranker");
-
     // report the result to REDIS with a ReportBolt
-    /* TODO */
     builder.setBolt("report-bolt", new ReportBolt(), 1).globalGrouping("book-word-ranker");
-
-    /*
-    builder.setBolt("intermediate-ranker", new IntermediateRankingsBolt(TOP_N), 4).fieldsGrouping("count-bolt", new Fields("word"));
-    builder.setBolt("total-ranker", new TotalRankingsBolt(TOP_N)).globalGrouping("intermediate-ranker");
-    builder.setBolt("report-bolt", new ReportBolt(), 1).globalGrouping("total-ranker");
-    */
 
     // create the default config object
     Config conf = new Config();
