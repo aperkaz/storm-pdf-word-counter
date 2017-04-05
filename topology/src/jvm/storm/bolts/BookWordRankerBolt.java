@@ -33,7 +33,7 @@ public class BookWordRankerBolt extends BaseRichBolt
   private OutputCollector collector;
 
   // number of top N words
-  private int TOP_N_WORDS = 1;
+  private int TOP_N_WORDS = 10;
 
   // report count
   private int reportCount = 0;

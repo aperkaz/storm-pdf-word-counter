@@ -17,6 +17,7 @@ import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 
 import storm.spouts.TestSpout;
+import storm.spouts.PdfSpoolingSpout;
 
 import storm.bolts.ParseWordBolt;
 import storm.bolts.BookWordCountBolt;
@@ -31,10 +32,12 @@ class PdfWordCountTopology
     TopologyBuilder builder = new TopologyBuilder();
 
     // attach the Random sentence Spout to the topology - parallelism of 1
-    builder.setSpout("test-spout", new TestSpout(), 1);
+    //builder.setSpout("test-spout", new TestSpout(), 1);
+    /* TODO */
+    builder.setSpout("spooling-spout", new PdfSpoolingSpout(), 1);
 
     // remove the unwanted words from each sentence and extract the words - parallelism of 10
-    builder.setBolt("word-parse-bolt", new ParseWordBolt(), 10). shuffleGrouping("test-spout");
+    builder.setBolt("word-parse-bolt", new ParseWordBolt(), 10). shuffleGrouping("spooling-spout");
 
     // count the word appearances by book - parallelism of 10
     builder.setBolt("book-word-count-bolt", new BookWordCountBolt(), 10).fieldsGrouping("word-parse-bolt", new Fields("book-title"));
@@ -72,13 +75,13 @@ class PdfWordCountTopology
       LocalCluster cluster = new LocalCluster();
 
       // submit the topology to the local cluster
-      cluster.submitTopology("tweet-word-count", conf, builder.createTopology());
+      cluster.submitTopology("pdf-word-count-topology", conf, builder.createTopology());
 
       // let the topology run for 900 seconds. note topologies never terminate!
       Utils.sleep(900000);
 
       // now kill the topology
-      cluster.killTopology("tweet-word-count");
+      cluster.killTopology("pdf-word-count-topology");
 
       // we are done, so shutdown the local cluster
       cluster.shutdown();

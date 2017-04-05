@@ -1,6 +1,7 @@
 package storm.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -19,13 +20,17 @@ public class FileUtils {
 	public static ArrayList<File> extractPdfFiles(String directory){
 		ArrayList<File> pdfFiles = new ArrayList<File>();
 
+		System.out.println("\nFILE DIR: "+directory+"\n");
+
 		File files[] = new File(directory).listFiles();
 
 		if (files != null) {
 			for (File file : files) {
+				System.out.println("FILE: "+file);
 				if (file.isFile()) {
 					String[] type = file.getName().toString().split("\\.(?=[^\\.]+$)");
 					if (type.length > 1 && type[1].equals(PDF_EXTENSION)) {
+
 						pdfFiles.add(file);
 					}
 				}
@@ -34,47 +39,38 @@ public class FileUtils {
 		return pdfFiles;
 	}
 
-	public static ArrayList<Book> populateBookContent(ArrayList<Book> books){
-		ArrayList<Book> populatedBooks = books;
+	public static ArrayList<String> getPdfContent(File file) {
+		String rawPdfContent = null;
+		ArrayList<String> pdfContent = new ArrayList<String>();
 
-		for(Book book : populatedBooks){
-
-			String pdfContent = extractPdfContext(book.getFile());
-		    // populate book
-		    String[] lines = pdfContent.split(System.getProperty("line.separator"));
-		    for(int index = 0; index < lines.length; index++){
-		    	book.addLine(lines[index]);
-		    }
-
-		}
-
-		return populatedBooks;
-	}
-
-	private static String extractPdfContext(File file){
-		String pdfContent = null;
-		try{
-			PDDocument document = null;
+		PDDocument document = null;
+		try {
 			document = PDDocument.load(file);
 			document.getClass();
-			if( !document.isEncrypted() ){
-			    PDFTextStripperByArea stripper = new PDFTextStripperByArea();
-			    stripper.setSortByPosition( true );
-			    PDFTextStripper Tstripper = new PDFTextStripper();
-			    pdfContent = Tstripper.getText(document);
+			if (!document.isEncrypted()) {
+				PDFTextStripperByArea stripper = new PDFTextStripperByArea();
+				stripper.setSortByPosition(true);
+				PDFTextStripper Tstripper = new PDFTextStripper();
+				rawPdfContent = Tstripper.getText(document);
 			}
-		}catch(Exception e){
-		    e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				document.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+
+		// populate ArrayList
+		String[] lines = rawPdfContent.split(System.getProperty("line.separator"));
+		for(int index = 0; index < lines.length; index++){
+			pdfContent.add(lines[index]);
+		}
+
 		return pdfContent;
 	}
 
-
-
-	public static void printFileList(ArrayList<File> files){
-		for(File file : files){
-			System.out.println(""+file.getName());
-		}
-	}
 
 }
