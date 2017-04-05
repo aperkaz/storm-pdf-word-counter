@@ -16,11 +16,12 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 
-import storm.spout.TestSpout;
+import storm.spouts.TestSpout;
 
-import storm.ParseWordBolt;
-import storm.BookWordCountBolt;
-import storm.BookWordRankerBolt;
+import storm.bolts.ParseWordBolt;
+import storm.bolts.BookWordCountBolt;
+import storm.bolts.BookWordRankerBolt;
+import storm.bolts.ReportBolt;
 
 class PdfWordCountTopology
 {

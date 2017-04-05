@@ -1,4 +1,4 @@
-package storm;
+package storm.bolts;
 
 import backtype.storm.Config;
 import backtype.storm.task.OutputCollector;

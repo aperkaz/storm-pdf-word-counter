@@ -1,4 +1,4 @@
-package storm.spout;
+package storm.spouts;
 
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
@@ -11,7 +11,7 @@ import backtype.storm.utils.Utils;
 import java.util.Map;
 import java.util.Random;
 
-public class PdfSpoolingSpout extends BaseRichSpout {
+public class TestSpout extends BaseRichSpout {
   SpoutOutputCollector _collector;
   Random _rand;
 
