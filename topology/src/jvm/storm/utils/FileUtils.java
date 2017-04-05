@@ -20,13 +20,10 @@ public class FileUtils {
 	public static ArrayList<File> extractPdfFiles(String directory){
 		ArrayList<File> pdfFiles = new ArrayList<File>();
 
-		System.out.println("\nFILE DIR: "+directory+"\n");
-
 		File files[] = new File(directory).listFiles();
 
 		if (files != null) {
 			for (File file : files) {
-				System.out.println("FILE: "+file);
 				if (file.isFile()) {
 					String[] type = file.getName().toString().split("\\.(?=[^\\.]+$)");
 					if (type.length > 1 && type[1].equals(PDF_EXTENSION)) {

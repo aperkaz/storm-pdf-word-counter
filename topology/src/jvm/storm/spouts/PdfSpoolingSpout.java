@@ -35,8 +35,6 @@ public class PdfSpoolingSpout extends BaseRichSpout {
     _collector = collector;
     _rand = new Random();
 
-    System.out.println("\nSPOUT LOAD\n");
-
     // initialize files to spool
     pdfFileList = FileUtils.extractPdfFiles(sourceDir);
 
@@ -51,11 +49,6 @@ public class PdfSpoolingSpout extends BaseRichSpout {
 
   @Override
   public void nextTuple() {
-    /*try{
-      Thread.sleep(3000);
-    } catch (Exception e) {
-			e.printStackTrace();
-    }*/
 
     String bookTitle = "", line = "";
 
@@ -68,11 +61,11 @@ public class PdfSpoolingSpout extends BaseRichSpout {
        ArrayList<String> bookContent = (ArrayList<String>) pair.getValue();
        if(bookContent.size() > 0){
          line = bookContent.remove(0);
+         // emit [bookTitle, line]
+          _collector.emit(new Values(bookTitle , line));
       }
        break;
     }
-    System.out.println("\nEMITTING: " + bookTitle + ": " + line + "\n");
-     _collector.emit(new Values(bookTitle , line));
   }
 
   @Override
