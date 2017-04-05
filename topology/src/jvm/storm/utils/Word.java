@@ -1,4 +1,4 @@
-package storm;
+package storm.utils;
 
 public class Word {
 

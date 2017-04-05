@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Iterator;
 
-import storm.Word;
+import storm.utils.Word;
 
 /**
  * A bolt that orders the top 3 words per book
