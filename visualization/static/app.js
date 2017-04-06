@@ -27,7 +27,7 @@ function getWord(event){
 }
 
 function getCount(event){
-  return event.data.split("|")[2];
+  return Number(event.data.split("|")[2]);
 }
 
 function isBookStored(bookTitle){
@@ -44,7 +44,7 @@ function initializeBook(bookTitle){
   bookObject['title'] = bookTitle;
   bookObject['words'] = [];
   bookObject['counts'] = [];
-  bookObject['minCount'] = 0;
+  bookObject['minCount'] = Number(0);
   return bookObject;
 }
 
@@ -57,6 +57,14 @@ function retrieveBookIndex(bookTitle){
   }
   return -1;
 }
+
+function computeNewMin(bookContent){
+  return Array.min(bookContent['counts']);
+}
+
+Array.min = function( array ){
+    return Math.min.apply( Math, array );
+};
 
 source.onmessage = function (event) {
   bookTitle = getBookTitle(event);
@@ -76,8 +84,10 @@ source.onmessage = function (event) {
     bookIndex = retrieveBookIndex(bookTitle);
   }
 
+  console.log('Current min log: '+ pdfData[bookIndex]['minCount']);
+
   // add word to book (if worth min count)
-  if( pdfData[bookIndex]['minCount'] < count){
+  if( pdfData[bookIndex]['minCount'] <= count){
     // is the word already contained
     if(!pdfData[bookIndex]['words'].includes(word)){
       // word not contained
@@ -91,6 +101,7 @@ source.onmessage = function (event) {
           if( pdfData[bookIndex]['counts'][index] < count){
             pdfData[bookIndex]['words'].splice(index, 0, word);
             pdfData[bookIndex]['counts'].splice(index, 0, count);
+            break;
           }
         }
       }
@@ -108,7 +119,7 @@ source.onmessage = function (event) {
     }
 
     // update min count
-      pdfData[bookIndex]['minCount'] = count;
+      pdfData[bookIndex]['minCount'] = computeNewMin(pdfData[bookIndex]);
   }
 
 
@@ -120,8 +131,10 @@ var updateBookInformation = function () {
 
   for (var index = 0 ; index < pdfData.length ; index++) {
       // create the new table per book
-      var table = createTableForBook(pdfData[index]);
-      html += table;
+      if(pdfData[index]['words'].length > 0){
+        var table = createTableForBook(pdfData[index]);
+        html += table;
+      }
   }
 
 
@@ -139,27 +152,19 @@ function createTableForBook(bookData){
   '   </thead>'+
   '   <tbody>';
 
-  table += bookData['words'].forEach(function (index){
-      return  '     <tr>  '+
-              '      <td>' + bookData['words'][index] + '</td>   '+
-              '      <td>' + bookData['counts'][index] + '</td>  '+
-              '     </tr>'
-  });
+  var tableBody = '';
+  for(var index = 0; index < bookData['words'].length ; index++){
+      tableBody +=  '     <tr>  '+
+                    '      <td>' + bookData['words'][index] + '</td>   '+
+                    '      <td>' + bookData['counts'][index] + '</td>  '+
+                    '     </tr>';
+  }
+  table += tableBody;
 
   table +=  '   </tbody> '+
             '</table>';
+  return table;
 }
-
-function populateLegend(){
-  var html = '<p><b>';
-  categories.map(function(category){
-    html += '<font color='+colors[categories.indexOf(category)]+'>'+category+
-    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>';
-  });
-  html += '</b></p>';
-  document.getElementById("legend").innerHTML = html;
-}
-
 
 //update display every #1000 milliseconds
 window.setInterval(updateBookInformation, 1000);
