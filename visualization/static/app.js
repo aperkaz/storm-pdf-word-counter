@@ -87,8 +87,6 @@ source.onmessage = function (event) {
     // update values
     var wordIndex = getWordIndex(pdfIndex, word);
     updateWordValues(pdfIndex, wordIndex, count);
-    // position
-    //relocateWord(pdfIndex, wordIndex);
   }
 
   removeExtraWords(pdfIndex);
