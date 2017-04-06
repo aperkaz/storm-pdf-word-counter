@@ -50,7 +50,7 @@ public class PdfSpoolingSpout extends BaseRichSpout {
   @Override
   public void nextTuple() {
     try{
-      Thread.sleep(100);
+      Thread.sleep(1);
     } catch (Exception e){
       e.printStackTrace();
     }
@@ -65,18 +65,10 @@ public class PdfSpoolingSpout extends BaseRichSpout {
 
        bookTitle = (String) pair.getKey();
        ArrayList<String> bookContent = (ArrayList<String>) pair.getValue();
-       if(bookContent.size() > 0){
-         line = bookContent.remove(0);
-         // emit [bookTitle, line]
-          _collector.emit(new Values(bookTitle , line));
-      } else {
-        try {
-          Thread.sleep(1000);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-       break;
+       for(String text : bookContent){
+         _collector.emit(new Values(bookTitle , text));
+       }      
+       it.remove();
     }
   }
 

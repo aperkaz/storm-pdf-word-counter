@@ -33,7 +33,7 @@ public class ParseWordBolt extends BaseRichBolt
     "en","una","in","for","this","go","en","all","no","don't","up","are",
     "http","http:","https","https:","http://","https://","with","just","your",
     "para","want","your","you're","really","video","it's","when","they","their","much",
-    "would","what","them","todo","FOLLOW","retweet","RETWEET","even","right","like",
+    "would","what","them","todo","CHAPTER","chapter","RETWEET","even","right","like",
     "bien","Like","will","Will","pero","Pero","can't","were","Can't","Were",
     "make","take","This","from","about","como","esta","follows","followed"};
 

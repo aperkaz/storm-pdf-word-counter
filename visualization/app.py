@@ -15,8 +15,7 @@ def event_stream():
 
 
 @app.route('/')
-def show_homepage():
-  #Word Cloud = cloud.html and app-cloud.js
+def show_homepage(): 
     return render_template("index.html")
 
 @app.route('/stream')
