@@ -16,7 +16,6 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 
-import storm.spouts.TestSpout;
 import storm.spouts.PdfSpoolingSpout;
 
 import storm.bolts.ParseWordBolt;
