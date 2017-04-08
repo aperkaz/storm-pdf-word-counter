@@ -123,17 +123,39 @@ var updateBookInformation = function () {
   // update tables with information
   var html = '';
 
+  var firstColumElement = true;
+  // create the new table per book
   for (var index = 0 ; index < pdfData.length ; index++) {
-      // create the new table per book
       if(pdfData[index]['words'].length > 0){
-        var table = '<div style="margin: 50px 150px; border-radius: 10px; '+
-                    'border: 2px solid #55ACEE; '+
-                    'padding: 20px;">';
-        table += createTableForBook(pdfData[index]);
-        html += table + '</div>';
+
+        var bootstraped = '';
+        if(firstColumElement)
+            bootstraped = '<div class="row">';
+
+
+        bootstraped += '<div class="col-md-6 col-xs-12 text-center style="padding: 50px">';
+        var tableContainer = '<div style="padding: 20px 0px">'
+        var table = tableContainer +'<div style="border-radius: 10px; '+
+                                          'border: 2px solid #55ACEE; '+
+                                          'padding-top: 20px ;">';
+        table += createTableForBook(pdfData[index]) +  '</div></div>';
+
+        bootstraped += table + '</div>';
+
+        if(firstColumElement){
+          firstColumElement = false;
+        } else {
+          bootstraped += '</div>';
+          firstColumElement = true;
+        }
+
+        html += bootstraped ;
       }
+
+
   }
 
+  //html += '</div>';
 
   document.getElementById("data").innerHTML = html;
 
@@ -144,7 +166,7 @@ function createTableForBook(bookData){
    '<table class="table" style="text-align: center;"> '+
   '   <thead> '+
   '     <tr> '+
-  '       <th class="text-center">' + bookData['title'] + '</th> '+
+  '       <th class="text-center" colspan="2">' + bookData['title'] + '</th> '+
   '     </tr>'+
   '   </thead>'+
   '   <tbody>';
@@ -152,8 +174,8 @@ function createTableForBook(bookData){
   var tableBody = '';
   for(var index = 0; index < bookData['words'].length ; index++){
       tableBody +=  '     <tr>  '+
-                    '      <td style="width: 50%">' + bookData['words'][index] + '</td>   '+
-                    '      <td style="width: 50%">' + bookData['counts'][index] + '</td>  '+
+                    '      <td style="max-width: 50%">' + bookData['words'][index] + '</td>   '+
+                    '      <td style="max-width: 50%">' + bookData['counts'][index] + '</td>  '+
                     '     </tr>';
   }
   table += tableBody;
