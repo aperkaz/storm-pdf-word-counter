@@ -85,6 +85,31 @@ function updateWordValues(pdfIndex, wordIndex, newCount){
   pdfData[pdfIndex]['counts'][wordIndex] = newCount;
 }
 
+function reorderWord(pdfIndex, wordIndex){
+
+    var count = pdfData[pdfIndex]['counts'][wordIndex];
+    var newIndex;
+
+    for( var i = 0; i < wordIndex ; i++){
+      if(count > pdfData[pdfIndex]['counts'][i]){
+        newIndex = i;
+        shiftArrPos(pdfData[pdfIndex]['words'], wordIndex, i);
+        shiftArrPos(pdfData[pdfIndex]['counts'], wordIndex, i);
+        break;
+      }
+    }
+
+    if(newIndex > 0)
+      reorderWord(pdfIndex,newIndex);
+
+}
+
+function shiftArrPos(arr, index1, index2){
+      var temp = arr[index1];
+      arr[index1] = arr[index2];
+      arr[index2] = temp;
+    }
+
 function removeExtraWords(pdfIndex){
   pdfData[pdfIndex]['words'] = pdfData[pdfIndex]['words'].slice(0, MAX_WORDS_PER_FILE);
   pdfData[pdfIndex]['counts'] = pdfData[pdfIndex]['counts'].slice(0, MAX_WORDS_PER_FILE);

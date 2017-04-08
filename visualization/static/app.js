@@ -20,19 +20,6 @@ var dummyDataStruct = [
 ];
 
 
-/*
-function isBookStored(pdfTitle){
-  for(var index = 0; index < pdfData.length ; index++){
-    if(pdfData[index]['title'] === pdfTitle){
-      return true;
-    }
-  }
-  return false;
-}
-*/
-
-
-
 
 
 
@@ -87,6 +74,7 @@ source.onmessage = function (event) {
     // update values
     var wordIndex = getWordIndex(pdfIndex, word);
     updateWordValues(pdfIndex, wordIndex, count);
+    reorderWord(pdfIndex, wordIndex);
   }
 
   removeExtraWords(pdfIndex);
