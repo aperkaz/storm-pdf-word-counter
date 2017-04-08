@@ -31,9 +31,7 @@ class PdfWordCountTopology
     // create the topology
     TopologyBuilder builder = new TopologyBuilder();
 
-    // attach the Random sentence Spout to the topology - parallelism of 1
-    //builder.setSpout("test-spout", new TestSpout(), 1);
-    /* TODO */
+    // attach the spooling spout to the topology - parallelism of 1
     builder.setSpout("spooling-spout", new PdfSpoolingSpout(), 1);
 
     // remove the unwanted words from each sentence and extract the words - parallelism of 10

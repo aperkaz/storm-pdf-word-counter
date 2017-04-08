@@ -154,9 +154,6 @@ var updateBookInformation = function () {
 
 
   }
-
-  //html += '</div>';
-
   document.getElementById("data").innerHTML = html;
 
 };

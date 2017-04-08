@@ -20,7 +20,9 @@ import storm.utils.Book;
 import storm.utils.BookLine;
 import storm.utils.FileUtils;
 
-
+/*
+*  Spooling spout that reads all the pdfs from the sourceDir
+*/
 public class PdfSpoolingSpout extends BaseRichSpout {
   SpoutOutputCollector _collector;
   Random _rand;
@@ -67,7 +69,7 @@ public class PdfSpoolingSpout extends BaseRichSpout {
        ArrayList<String> bookContent = (ArrayList<String>) pair.getValue();
        for(String text : bookContent){
          _collector.emit(new Values(bookTitle , text));
-       }      
+       }
        it.remove();
     }
   }
