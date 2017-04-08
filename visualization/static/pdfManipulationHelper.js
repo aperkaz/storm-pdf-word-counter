@@ -119,7 +119,6 @@ function updateMinCount(pdfIndex){
     pdfData[pdfIndex]['minCount'] = computeNewMin(pdfData[pdfIndex]);
 }
 
-//
 var updateBookInformation = function () {
   // update tables with information
   var html = '';
@@ -127,8 +126,8 @@ var updateBookInformation = function () {
   for (var index = 0 ; index < pdfData.length ; index++) {
       // create the new table per book
       if(pdfData[index]['words'].length > 0){
-        var table = '<div style="margin: 50px 150px; border-radius: 25px; '+
-                    'border: 2px solid #73AD21; '+
+        var table = '<div style="margin: 50px 150px; border-radius: 10px; '+
+                    'border: 2px solid #55ACEE; '+
                     'padding: 20px;">';
         table += createTableForBook(pdfData[index]);
         html += table + '</div>';

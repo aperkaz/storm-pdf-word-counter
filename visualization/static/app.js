@@ -3,26 +3,6 @@ var source = new EventSource('/stream');
 var pdfData = [];
 var MAX_WORDS_PER_FILE = 10;
 
-
-
-// example object
-var dummyDataStruct = [
-  {
-  "title" : "pdfTitle",
-  "words" : [
-    "word1",  "word2"
-  ],
-  "counts" : [
-    10, 5
-  ],
-  "minCount" : 0
-  }
-];
-
-
-
-
-
 function computeNewMin(bookContent){
   return Array.min(bookContent['counts']);
 }
@@ -30,21 +10,6 @@ function computeNewMin(bookContent){
 Array.min = function( array ){
     return Math.min.apply( Math, array );
 };
-
-/*
-
-IDEAL PROGRAM FLOW:
-
-
-
-
-3- is the word stored?
-3.1 - iterate and store if not
-3.2 - update and reorder
-4 - update min value
-5 - remove extra word if any
-
-*/
 
 source.onmessage = function (event) {
   // check if valid tuple
@@ -78,7 +43,6 @@ source.onmessage = function (event) {
   }
 
   removeExtraWords(pdfIndex);
-
   updateMinCount(pdfIndex);
 
 };
