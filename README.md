@@ -10,6 +10,10 @@ This following repo contains the Storm topology code and the instructions to run
   * [Oracle VM VirtualBox](https://www.virtualbox.org/) - general purpose virtualizer .
   * SSH client, such as [PuTTY](http://www.putty.org/).
 
+## Topology
+
+![topology](https://cloud.githubusercontent.com/assets/16224847/25065950/5c86f18e-2219-11e7-9070-2ee3f5ca69db.PNG)
+
 ## Getting Started
 
 1. `git clone https://github.com/aperkaz/storm-pdf-word-counter.git`
