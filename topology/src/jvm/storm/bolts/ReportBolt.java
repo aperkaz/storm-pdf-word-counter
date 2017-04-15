@@ -50,15 +50,15 @@ public class ReportBolt extends BaseRichBolt
   @Override
   public void execute(Tuple tuple)
   {
-    // extract information form tuple ['book-title', 'word', 'count']
+    // extract information form tuple ['pdf-title', 'word', 'count']
 
-    String bookTitle = tuple.getString(0);
+    String pdfTitle = tuple.getString(0);
     String word = tuple.getString(1);
     Long count = tuple.getLong(2);
 
-    redis.publish("BookWordCount", bookTitle + "|" + word + "|" + Long.toString(count));
+    redis.publish("PdfWordCount", pdfTitle + "|" + word + "|" + Long.toString(count));
 
-    System.out.println("\n PUBLISHED TO REDIS: "+ bookTitle + " | " + word + " | " + count + "\n");
+    System.out.println("\n PUBLISHED TO REDIS: "+ pdfTitle + " | " + word + " | " + count + "\n");
   }
 
   public void declareOutputFields(OutputFieldsDeclarer declarer)

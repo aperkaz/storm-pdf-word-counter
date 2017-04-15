@@ -22,13 +22,13 @@ import java.util.Map;
 /**
  * A bolt that counts the words that it receives
  */
-public class BookWordCountBolt extends BaseRichBolt
+public class PdfWordCountBolt extends BaseRichBolt
 {
   // To output tuples from this bolt to the next stage bolts, if any
   private OutputCollector collector;
 
-  // Map to store the book-word-count relation
-  private Map<String, HashMap<String, Long>> bookWords;
+  // Map to store the pdf-word-count relation
+  private Map<String, HashMap<String, Long>> pdfWords;
 
   // Map to store word-count relation
   private Map<String, Long> wordCount;
@@ -44,15 +44,15 @@ public class BookWordCountBolt extends BaseRichBolt
     collector = outputCollector;
 
     // create and initialize the maps
-    bookWords = new HashMap<String, HashMap<String, Long>>();
+    pdfWords = new HashMap<String, HashMap<String, Long>>();
     wordCount = new HashMap<String, Long>();
   }
 
   @Override
   public void execute(Tuple tuple)
   {
-    // get the book title from the 1st column of incoming tuple
-    String bookTitle = tuple.getString(0);
+    // get the pdf title from the 1st column of incoming tuple
+    String pdfTitle = tuple.getString(0);
 
     // get the word from the 2nd column of incoming tuple
     String word = tuple.getString(1);
@@ -60,43 +60,43 @@ public class BookWordCountBolt extends BaseRichBolt
     // set the default value for count
     Long count = 1L;
 
-    // check if the book is present in the map
-    if(bookWords.get(bookTitle) == null){
+    // check if the pdf is present in the map
+    if(pdfWords.get(pdfTitle) == null){
 
-      // book not present, add it
-      bookWords.put(bookTitle, new HashMap<String, Long>());
-      // add the first word of the book
-      bookWords.get(bookTitle).put(word, count);
+      // pdf not present, add it
+      pdfWords.put(pdfTitle, new HashMap<String, Long>());
+      // add the first word of the pdf
+      pdfWords.get(pdfTitle).put(word, count);
 
     } else {
 
       // present, check if the word is there
-      if(bookWords.get(bookTitle).get(word) == null){
+      if(pdfWords.get(pdfTitle).get(word) == null){
 
-        // book present, but not word
-        bookWords.get(bookTitle).put(word, count);
+        // pdf present, but not word
+        pdfWords.get(pdfTitle).put(word, count);
 
       } else {
         // check word present
-        if(!bookWords.get(bookTitle).containsKey(word)){
-          bookWords.get(bookTitle).put(word, count);
+        if(!pdfWords.get(pdfTitle).containsKey(word)){
+          pdfWords.get(pdfTitle).put(word, count);
         } else {
-          count = bookWords.get(bookTitle).get(word);
-          bookWords.get(bookTitle).put(word, ++count);
+          count = pdfWords.get(pdfTitle).get(word);
+          pdfWords.get(pdfTitle).put(word, ++count);
         }
       }
 
     }
 
-    // emit the book, word and count
-    collector.emit(new Values(bookTitle, word, count));
+    // emit the pdf, word and count
+    collector.emit(new Values(pdfTitle, word, count));
   }
 
   @Override
   public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer)
   {
     // tell storm the schema of the output tuple for this spout
-    // tuple consists of a three columns ['book-title', 'word', 'count']
-    outputFieldsDeclarer.declare(new Fields("book-title", "word", "count"));
+    // tuple consists of a three columns ['pdf-title', 'word', 'count']
+    outputFieldsDeclarer.declare(new Fields("pdf-title", "word", "count"));
   }
 }

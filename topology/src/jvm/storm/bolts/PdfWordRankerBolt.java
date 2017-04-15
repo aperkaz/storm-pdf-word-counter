@@ -25,9 +25,9 @@ import java.util.Iterator;
 import storm.utils.Word;
 
 /**
- * A bolt that orders the top 3 words per book
+ * A bolt that orders the top 10 words per pdf
  */
-public class BookWordRankerBolt extends BaseRichBolt
+public class PdfWordRankerBolt extends BaseRichBolt
 {
   // To output tuples from this bolt to the next stage bolts, if any
   private OutputCollector collector;
@@ -38,8 +38,8 @@ public class BookWordRankerBolt extends BaseRichBolt
   // report count
   private int reportCount = 0;
 
-  // store bookTitle -> listOfTopNWords
-  private HashMap<String, LinkedList<Word>> bookWordMap;
+  // store pdfTitle -> listOfTopNWords
+  private HashMap<String, LinkedList<Word>> pdfWordMap;
 
   @Override
   public void prepare(
@@ -52,34 +52,34 @@ public class BookWordRankerBolt extends BaseRichBolt
     collector = outputCollector;
 
     // create and initialize the data structures
-    bookWordMap = new HashMap<String, LinkedList<Word>>();
+    pdfWordMap = new HashMap<String, LinkedList<Word>>();
   }
 
   @Override
   public void execute(Tuple tuple)
   {
-    // extract values from ['book-title', 'word', 'count']
-    String bookTitle = tuple.getString(0);
+    // extract values from ['pdf-title', 'word', 'count']
+    String pdfTitle = tuple.getString(0);
     String word = tuple.getString(1);
     Long count = tuple.getLong(2);
 
-    // check if the book is present in the map
-    if(bookWordMap.get(bookTitle) == null){
+    // check if the pdf is present in the map
+    if(pdfWordMap.get(pdfTitle) == null){
 
-      bookWordMap.put(bookTitle, new LinkedList<Word>());
+      pdfWordMap.put(pdfTitle, new LinkedList<Word>());
 
       // add first word
-      bookWordMap.get(bookTitle).add(new Word(word, count));
+      pdfWordMap.get(pdfTitle).add(new Word(word, count));
 
     } else {
       // chekc if word cualifies in the topN
-      LinkedList<Word> TopNWords = bookWordMap.get(bookTitle);
+      LinkedList<Word> TopNWords = pdfWordMap.get(pdfTitle);
       boolean alreadyInList = false;
 
       // word allready in the list
       for(int iterator = 0; iterator < TopNWords.size(); iterator++){
         if(TopNWords.get(iterator).getContent().equals(word)){
-          bookWordMap.get(bookTitle).set(iterator, new Word(word, count));
+          pdfWordMap.get(pdfTitle).set(iterator, new Word(word, count));
           alreadyInList = true;
           break;
         }
@@ -91,7 +91,7 @@ public class BookWordRankerBolt extends BaseRichBolt
           Word iteratedWord = TopNWords.get(iterator);
           if(iteratedWord.getCount() < count){
             // insert new word word and shift the rest
-            bookWordMap.get(bookTitle).add(iterator, new Word(word, count));
+            pdfWordMap.get(pdfTitle).add(iterator, new Word(word, count));
             break;
           }
         }
@@ -99,19 +99,19 @@ public class BookWordRankerBolt extends BaseRichBolt
     }
 
     // remove the extra elements in the list if any
-    if(bookWordMap.get(bookTitle).size() > TOP_N_WORDS)
-      bookWordMap.get(bookTitle).subList(TOP_N_WORDS, bookWordMap.get(bookTitle).size()).clear();
+    if(pdfWordMap.get(pdfTitle).size() > TOP_N_WORDS)
+      pdfWordMap.get(pdfTitle).subList(TOP_N_WORDS, pdfWordMap.get(pdfTitle).size()).clear();
 
     if(++reportCount >= 100){
-      // emit the topN words for all books
+      // emit the topN words for all pdfs
 
-      Iterator it = bookWordMap.entrySet().iterator();
+      Iterator it = pdfWordMap.entrySet().iterator();
       while (it.hasNext()) {
            Map.Entry pair = (Map.Entry)it.next();
-           bookTitle = (String) pair.getKey();
+           pdfTitle = (String) pair.getKey();
            LinkedList<Word> wordList = (LinkedList<Word>) pair.getValue();
            for(Word iteratedWord : wordList){
-             collector.emit(new Values(bookTitle, iteratedWord.getContent(), iteratedWord.getCount()));
+             collector.emit(new Values(pdfTitle, iteratedWord.getContent(), iteratedWord.getCount()));
            }
        }
       reportCount = 0;
@@ -123,7 +123,7 @@ public class BookWordRankerBolt extends BaseRichBolt
   public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer)
   {
     // tell storm the schema of the output tuple for this spout
-    // tuple consists of a three columns ['book-title', 'word', 'count']
-    outputFieldsDeclarer.declare(new Fields("book-title", "word", "count"));
+    // tuple consists of a three columns ['pdf-title', 'word', 'count']
+    outputFieldsDeclarer.declare(new Fields("pdf-title", "word", "count"));
   }
 }

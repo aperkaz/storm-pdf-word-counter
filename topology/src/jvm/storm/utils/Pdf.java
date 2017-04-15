@@ -3,26 +3,26 @@ package storm.utils;
 import java.io.File;
 import java.util.ArrayList;
 
-public class Book {
+public class Pdf {
 
 	private File file;
 	private String name;
-	private ArrayList<BookLine> content;
+	private ArrayList<PdfLine> content;
 
-	public Book(String name, File file){
+	public Pdf(String name, File file){
 		this.name = name;
 		this.file = file;
-		this.content = new ArrayList<BookLine>();
+		this.content = new ArrayList<PdfLine>();
 	}
 
 	public void addLine(String lineString){
-		content.add(new BookLine(lineString));
+		content.add(new PdfLine(lineString));
 	}
 
 	@Override
 	public String toString() {
-		String print = "Book: " + getName();
-		for(BookLine line : content){
+		String print = "Pdf: " + getName();
+		for(PdfLine line : content){
 			print += "\n "+line;
 		}
 		return print;
@@ -36,11 +36,11 @@ public class Book {
 		this.name = name;
 	}
 
-	public ArrayList<BookLine> getContent() {
+	public ArrayList<PdfLine> getContent() {
 		return content;
 	}
 
-	public void setContent(ArrayList<BookLine> content) {
+	public void setContent(ArrayList<PdfLine> content) {
 		this.content = content;
 	}
 

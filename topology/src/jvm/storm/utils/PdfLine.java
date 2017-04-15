@@ -1,10 +1,10 @@
 package storm.utils;
 
-public class BookLine {
+public class PdfLine {
 
 	private String line;
 
-	public BookLine(String line){
+	public PdfLine(String line){
 		this.line = line;
 	}
 
@@ -18,7 +18,7 @@ public class BookLine {
 
 	@Override
 	public String toString() {
-		return"BookLine: "+line.toString();
+		return"PdfLine: "+line.toString();
 	}
 
 }

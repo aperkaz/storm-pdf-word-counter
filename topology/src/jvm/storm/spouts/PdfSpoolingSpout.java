@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import storm.utils.Book;
-import storm.utils.BookLine;
+import storm.utils.Pdf;
+import storm.utils.PdfLine;
 import storm.utils.FileUtils;
 
 /*
@@ -28,7 +28,7 @@ public class PdfSpoolingSpout extends BaseRichSpout {
   Random _rand;
 
   ArrayList<File> pdfFileList = new ArrayList<File>();
-  HashMap<String, ArrayList<String>> booksContent = new HashMap<String, ArrayList<String>>();
+  HashMap<String, ArrayList<String>> pdfsContent = new HashMap<String, ArrayList<String>>();
 
   private static String sourceDir = "/vagrant/books";
 
@@ -40,11 +40,11 @@ public class PdfSpoolingSpout extends BaseRichSpout {
     // initialize files to spool
     pdfFileList = FileUtils.extractPdfFiles(sourceDir);
 
-		// populate books
+		// populate pdfs
     for(File pdfFile : pdfFileList){
 		    ArrayList<String>pdfContent = FileUtils.getPdfContent(pdfFile);
         System.out.println("Adding: "+pdfFile.getName());
-        booksContent.put(pdfFile.getName(), pdfContent);
+        pdfsContent.put(pdfFile.getName(), pdfContent);
     }
 
   }
@@ -58,17 +58,17 @@ public class PdfSpoolingSpout extends BaseRichSpout {
     }
 
 
-    String bookTitle = "", line = "";
+    String pdfTitle = "", line = "";
 
-    // emit books
-    Iterator it = booksContent.entrySet().iterator();
+    // emit pdfs
+    Iterator it = pdfsContent.entrySet().iterator();
     while (it.hasNext()) {
        Map.Entry pair = (Map.Entry)it.next();
 
-       bookTitle = (String) pair.getKey();
-       ArrayList<String> bookContent = (ArrayList<String>) pair.getValue();
-       for(String text : bookContent){
-         _collector.emit(new Values(bookTitle , text));
+       pdfTitle = (String) pair.getKey();
+       ArrayList<String> pdfContent = (ArrayList<String>) pair.getValue();
+       for(String text : pdfContent){
+         _collector.emit(new Values(pdfTitle , text));
        }
        it.remove();
     }
@@ -76,8 +76,8 @@ public class PdfSpoolingSpout extends BaseRichSpout {
 
   @Override
   public void declareOutputFields(OutputFieldsDeclarer declarer) {
-    // tuple consists of a double column ["book-title", "sentence"]
-    declarer.declare(new Fields("book-title", "sentence"));
+    // tuple consists of a double column ["pdf-title", "sentence"]
+    declarer.declare(new Fields("pdf-title", "sentence"));
   }
 
 }

@@ -50,8 +50,8 @@ public class ParseWordBolt extends BaseRichBolt
   @Override
   public void execute(Tuple tuple)
   {
-    // get the 1st column 'book' from tuple
-    String book = tuple.getString(0);
+    // get the 1st column 'pdf' from tuple
+    String pdf = tuple.getString(0);
 
     // get the 2st column 'sentenceContent' from tuple
     String sentenceContent = tuple.getString(1);
@@ -67,7 +67,7 @@ public class ParseWordBolt extends BaseRichBolt
       //emit only words greater than length 3 and not stopword list
       if(token.length() > 3 && !Arrays.asList(skipWords).contains(token)){
         // emit the word if bigger than 3 and not in the skip list
-        collector.emit(new Values(book, token));
+        collector.emit(new Values(pdf, token));
       }
     }
   }
@@ -75,8 +75,8 @@ public class ParseWordBolt extends BaseRichBolt
   @Override
   public void declareOutputFields(OutputFieldsDeclarer declarer)
   {
-    // tuple consists of a double column ["book-title", "word"]
-    declarer.declare(new Fields("book-title", "word"));
+    // tuple consists of a double column ["pdf-title", "word"]
+    declarer.declare(new Fields("pdf-title", "word"));
   }
 
 }

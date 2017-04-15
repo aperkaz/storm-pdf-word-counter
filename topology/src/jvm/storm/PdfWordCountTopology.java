@@ -19,8 +19,8 @@ import backtype.storm.utils.Utils;
 import storm.spouts.PdfSpoolingSpout;
 
 import storm.bolts.ParseWordBolt;
-import storm.bolts.BookWordCountBolt;
-import storm.bolts.BookWordRankerBolt;
+import storm.bolts.PdfWordCountBolt;
+import storm.bolts.PdfWordRankerBolt;
 import storm.bolts.ReportBolt;
 
 class PdfWordCountTopology
@@ -36,14 +36,14 @@ class PdfWordCountTopology
     // remove the unwanted words from each sentence and extract the words - parallelism of 10
     builder.setBolt("word-parse-bolt", new ParseWordBolt(), 10). shuffleGrouping("spooling-spout");
 
-    // count the word appearances by book - parallelism of 10
-    builder.setBolt("book-word-count-bolt", new BookWordCountBolt(), 10).fieldsGrouping("word-parse-bolt", new Fields("book-title"));
+    // count the word appearances by pdf - parallelism of 10
+    builder.setBolt("pdf-word-count-bolt", new PdfWordCountBolt(), 10).fieldsGrouping("word-parse-bolt", new Fields("pdf-title"));
 
-    // order the top 10 words per book - parallelism of 5
-    builder.setBolt("book-word-ranker", new BookWordRankerBolt()).globalGrouping("book-word-count-bolt");
+    // order the top 10 words per pdf
+    builder.setBolt("pdf-word-ranker", new PdfWordRankerBolt()).globalGrouping("pdf-word-count-bolt");
 
     // report the result to REDIS with a ReportBolt
-    builder.setBolt("report-bolt", new ReportBolt(), 1).globalGrouping("book-word-ranker");
+    builder.setBolt("report-bolt", new ReportBolt(), 1).globalGrouping("pdf-word-ranker");
 
     // create the default config object
     Config conf = new Config();
